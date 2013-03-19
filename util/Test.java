@@ -1,41 +1,32 @@
 package util;
 
-import java.awt.Dimension;
+public final class Test {
 
-import gui.GraphicGrid;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.text.JTextComponent.KeyBinding;
-
-public class Test {
-
-	private JFrame frame;
+//	private JFrame frame;
 	private StdGrid model;
-	private JButton test;
+//	private JButton test;
 	
-	public Test() {
+	private Test() {
 		model = new StdGrid();
 		fillSudoku();
-		display();
+//		display();
 		model.setCase(0, 0, 5);
 		System.out.print("\n\n");
-		display();
+//		display();
 		boolean validLine = model.getRow(0).isValid();
 		System.out.println("\n");
 		System.out.println(validLine ? "Ligne 0 Valide" : "Ligne 0 invalide");
 		System.out.println("\n");
 		model.clearGrid();
-		display();
+//		display();
 	}
 	
 	
-    public void display() {
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
+//    public void display() {
+//        frame.pack();
+//        frame.setLocationRelativeTo(null);
+//        frame.setVisible(true);
+//    }
     
 	private void fillSudoku() {
 		int higher = 10;
@@ -49,17 +40,16 @@ public class Test {
 		}
 	}
 	
-	private void placeComponents() {
-		frame = new JFrame("Sudoku");
-		test = new JButton("test");
-		GraphicGrid grid = new GraphicGrid(model);
-		
-		
-	}
+//	private void placeComponents() {
+//		frame = new JFrame("Sudoku");
+//		test = new JButton("test");
+//		GraphicGrid grid = new GraphicGrid(model);
+//		
+//		
+//	}
 
 	public static void main(String[] args) {
 		new Test();
-		
 	}
 
 }

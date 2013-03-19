@@ -42,11 +42,29 @@ public class StdRow implements Row {
 	}
 	
 	// COMMANDES
+	public void addPossibleCandidates(int v) {
+		if (!isValidValue(v) || v == 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i < 9; i++) {
+			row[i].addPossibleCandidate(v);
+		}
+	}
+	
+	public void removePossibleCandidates(int v) {
+		if (!isValidValue(v) || v == 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i < 9; i++) {
+			row[i].removePossibleCandidate(v);
+		}
+	}
+	
 	public void setCase(int col, int v) {
 		if (col < 0 || col > 8) {
 			throw new IllegalArgumentException("Mauvais numéro de colonne");
 		}
-		if (v < 0 || v > 9) {
+		if (!isValidValue(v)) {
 			throw new IllegalArgumentException("Mauvaise valeur");
 		}
 		row[col].setValue(v);

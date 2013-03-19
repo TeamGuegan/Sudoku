@@ -1,15 +1,10 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import util.StdCase;
 import util.StdGrid;
 
 public class Sudoku {
@@ -21,7 +16,8 @@ public class Sudoku {
 	public Sudoku() {
 		model = new StdGrid();
 		createView();
-		//grid = new GraphicGrid(model); 
+		grid = new GraphicGrid(model); 
+//		fillSudoku();
 		placeComponents();
 	}
 	
@@ -46,32 +42,31 @@ public class Sudoku {
         });
     }
     
-	@SuppressWarnings("unused")
-	private void fillSudoku() {
-		int higher = 10;
-		int lower = 1;
-		int random;
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				random = (int) (Math.random() * (higher - lower)) + lower;
-				model.setCase(i, j, random);
-			}
-		}
-	}
+//	private void fillSudoku() {
+//		int higher = 10;
+//		int lower = 1;
+//		int random;
+//		for (int i = 0; i < 9; i++) {
+//			for (int j = 0; j < 9; j++) {
+//				random = (int) (Math.random() * (higher - lower)) + lower;
+//				model.setCase(i, j, random);
+//			}
+//		}
+//	}
 	
 	private void placeComponents() {
-		//frame.add(grid, BorderLayout.CENTER);
-		JPanel p = new JPanel(new GridLayout(9, 0)); {
-			for (int i = 0; i < 9; i++) {
-				JPanel q = new JPanel(new GridLayout(0, 9)); {
-					for (int j = 0; j < 9; j++) {
-						p.add(new GraphicCase(model.getCase(i, j), i, j));
-					}
-				}
-				p.add(q);
-			}
-		}
-		frame.add(p, BorderLayout.NORTH);
+		frame.add(grid, BorderLayout.CENTER);
+//		JPanel p = new JPanel(new GridLayout(9, 0)); {
+//			for (int i = 0; i < 9; i++) {
+//				JPanel q = new JPanel(new GridLayout(0, 9)); {
+//					for (int j = 0; j < 9; j++) {
+//						p.add(new GraphicCase(model.getCase(i, j), i, j));
+//					}
+//				}
+//				p.add(q);
+//			}
+//		}
+//		frame.add(p, BorderLayout.NORTH);
 		frame.add(test, BorderLayout.SOUTH);
 	}
 }

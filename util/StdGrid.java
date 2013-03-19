@@ -3,7 +3,11 @@ package util;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StdGrid {
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
+
+public class StdGrid implements Grid {
 	
 	public static final int CASE_NB = 81,
 				DIM = 9;
@@ -18,6 +22,9 @@ public class StdGrid {
 	private final Map<Integer, Row> dataRow;
 	//map de colonne
 	private final Map<Integer, Column> dataColumn;
+	
+	private EventListenerList listenerList;
+	private ChangeEvent changeEvent;
 	
 	//CONSTRUCTEUR
 	public StdGrid() {
@@ -34,6 +41,7 @@ public class StdGrid {
 		initDataColumn();
 		dataRow = new HashMap<Integer, Row>();
 		initDataRow();
+		listenerList = new EventListenerList();
 	}
 	
 	//REQUETES	
@@ -139,8 +147,12 @@ public class StdGrid {
 		return tab;
 	}
 	
+	public int getNbOfFreeCase() {
+		return free;
+	}
+	
 	// COMMANDES
-	public void setCase(int c, int r, int v) {
+	public void setCase(int r, int c, int v) {
 		if (c < 0 || c > 8) {
 			throw new IllegalArgumentException();
 		}
@@ -151,6 +163,14 @@ public class StdGrid {
 			throw new IllegalArgumentException();
 		}
 		grid[r][c].setValue(v);
+		free--;
+		Row row = getRow(r);
+		row.removePossibleCandidates(v);
+		Column col = getColumn(c);
+		col.removePossibleCandidates(v);
+		Block block = getBlock(c, r);
+		block.removePossibleCandidates(v);
+		fireStateChanged();
 	}
 	
 	public void clearCase(int c, int r) {
@@ -160,7 +180,18 @@ public class StdGrid {
 		if (r < 0 || r > 8) {
 			throw new IllegalArgumentException();
 		}
+		int v = grid[r][c].getValue();
 		grid[r][c].clear();
+		free++;
+		if (v != 0) {
+			Row row = getRow(r);
+			row.addPossibleCandidates(v);
+			Column col = getColumn(c);
+			col.addPossibleCandidates(v);
+			Block block = getBlock(c, r);
+			block.addPossibleCandidates(v);
+		}
+		fireStateChanged();
 	}
 	
 	public void clearGrid() {
@@ -169,16 +200,35 @@ public class StdGrid {
 				clearCase(c, r);
 			}
 		}
+		fireStateChanged();
 	}
+	
+	public void addChangeListener(ChangeListener listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException();
+		}
+    	listenerList.add(ChangeListener.class, listener);
+	}
+	
+	public void removeChangeListener(ChangeListener listener) {
+		if (listener == null) {
+    		throw new IllegalArgumentException();
+		}
+    	listenerList.remove(ChangeListener.class, listener);
+	}
+
 	
 	// OUTILS
-	private boolean isValidBlockRow(int r) {
-		return false;
-	}
 	
-	private boolean isValidBlockColumn(int c) {
-		return false;
-	}
+//	Ces deux fonctions sont elles utiles???
+//	
+//	private boolean isValidBlockRow(int r) {
+//		return false;
+//	}
+//	
+//	private boolean isValidBlockColumn(int c) {
+//		return false;
+//	}
 	
 	//initialise tous les blocks avec les cases de la grille
 	private void initDataBlock() {
@@ -197,9 +247,9 @@ public class StdGrid {
 					tab[r % 3][c % 3] = grid[r][c];
 					r++;
 				}
+				r = tmp;
 				c++;
 			}
-			r = tmp;
 			dataBlock.put(i, new StdBlock(tab));
 		}
 	}
@@ -225,4 +275,14 @@ public class StdGrid {
 			dataRow.put(r, new StdRow(tab));
 		}
 	}
+	
+	protected void fireStateChanged() {
+    	for (ChangeListener cl
+    			: listenerList.getListeners(ChangeListener.class)) {
+    		if (changeEvent == null) {
+    			changeEvent = new ChangeEvent(this);
+    		}
+    		cl.stateChanged(changeEvent);
+    	}
+    }
 }

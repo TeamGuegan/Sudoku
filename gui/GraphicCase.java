@@ -11,63 +11,61 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
-import util.Case;
+import util.Grid;
 
 public class GraphicCase extends JComponent {
-	private Case model;
-	private Dimension coord;
-	private Color color;
+//	private Case model;
+	private Grid model;
+//	private Dimension coord;
 	private int row;
 	private int col;
 	private static final int CASE_SIZE = 50;
 	private static final int FONT_SIZE = 10;
 	private static final int MARGIN_CASE = 5;
-	private static final int MARGIN = 25;
+//	private static final int MARGIN = 25;
+	private static final int VALUE_FONT_SIZE = 36;
 	
-	public GraphicCase(Case c, int row, int col) {
-		this(c, Color.WHITE, row, col);
-	}
-	
-	public GraphicCase(Case c, Color color, int row, int col) {
-		if (c == null) {
+	public GraphicCase(Grid model, int row, int col) {
+		if (model == null) {
 			throw new IllegalArgumentException("Pas de case");
 		}
 		if (row < 0 || row > 8) {
-			throw new IllegalArgumentException("Mauvais numŽro ligne");
+			throw new IllegalArgumentException("Mauvais numéro ligne");
 		}
 		if (col < 0 || col > 8) {
-			throw new IllegalArgumentException("Mauvais numŽro colonne");
+			throw new IllegalArgumentException("Mauvais numéro colonne");
 		}
-		model = c;
+		this.model = model;
 		this.row = row;
 		this.col = col;
-		this.color = color;
 		setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		setPreferredSize(new Dimension(50, 50));
+		setPreferredSize(new Dimension(CASE_SIZE, CASE_SIZE));
 	}
 	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setColor(Color.RED);
+		g.setColor(model.getCase(row, col).getColor());
 		g.fillRect(0, 0, 
 				CASE_SIZE, CASE_SIZE);
-		/**if (model.getValue() == 0) {
+		if (model.getCase(row, col).getValue() == 0) {
 			paintCandidates(g);
 		} else {
 			paintValue(g);
-		}*/
+		}
 	}
 	
 	private void paintValue(Graphics g) {
 		if (g == null) {
 			throw new IllegalArgumentException();
 		}
+		Font f = new Font("Serif", Font.PLAIN, VALUE_FONT_SIZE);
 		FontMetrics fm = g.getFontMetrics();
-		String s = String.valueOf(model.getValue());
+		String s = String.valueOf(model.getCase(row, col).getValue());
 		int sWidth = fm.stringWidth(s);
-		g.drawString(s, (int) coord.getWidth() - 1 / 2 
-				* sWidth + 1 / 2 * CASE_SIZE, 
-				(int) coord.getHeight() - 1 / 2 * sWidth + 1 / 2 * CASE_SIZE);
+		setFont(f);
+		g.setColor(Color.BLACK);
+		g.drawString(s, CASE_SIZE / 2 - sWidth / 2, 
+				CASE_SIZE / 2 + sWidth / 2);
 	}
 	
 	private void paintCandidates(Graphics g) {
@@ -78,11 +76,11 @@ public class GraphicCase extends JComponent {
 		Graphics2D g2d = (Graphics2D) g;
 		Font f2 = new Font(fontName, fontStyle, FONT_SIZE);
 		g2d.setFont(f2);
-		List<Integer> l = model.getCandidates(); 
+		List<Integer> l = model.getCase(row, col).getPossibleCandidates(); 
 		if (l.size() != 0) {
-			int coordX = (int) coord.getWidth();
-			int coordY = (int) coord.getHeight();
-			coordY = coordY + MARGIN_CASE;
+			int coordX = 0;
+			int coordY = 0;
+			coordY = coordY + MARGIN_CASE * 2;
 			for (int i = 1; i <= 9; i++) {
 				if ((i % 3 == 1) && (i != 1)) {
 					coordX = 0;

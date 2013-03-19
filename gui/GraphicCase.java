@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
 import util.Case;
@@ -41,19 +42,14 @@ public class GraphicCase extends JComponent {
 		this.row = row;
 		this.col = col;
 		this.color = color;
-		//this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		int coordX = row * CASE_SIZE + MARGIN;
-		int coordY = col * CASE_SIZE + MARGIN;
-		coord = new Dimension(coordX, coordY);
+		setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		setPreferredSize(new Dimension(50, 50));
-		System.out.println("GraphicCase Constructeur");
 	}
 	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		System.out.println("graphicCase");
 		g.setColor(Color.RED);
-		g.fillRect((int) coord.getWidth(), (int) coord.getHeight(), 
+		g.fillRect(0, 0, 
 				CASE_SIZE, CASE_SIZE);
 		/**if (model.getValue() == 0) {
 			paintCandidates(g);
